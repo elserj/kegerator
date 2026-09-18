@@ -169,16 +169,48 @@ class KegeratorApp:
     # ------------------------------------------------------------ UI
     def _build_ui(self):
         self.root.columnconfigure(0, weight=1)
-        self.root.rowconfigure(1, weight=1)
+        self.root.rowconfigure(3, weight=1)   # keg cards row expands
 
         # header
         header = tk.Label(self.root, text="Justin's Kegerator", font=("Helvetica", 28, "bold"),
                         bg=BG, fg=TEXT)
         header.grid(row=0, column=0, pady=10)
 
+        # pour buttons
+        buttons = tk.Frame(self.root, bg=BG)
+        buttons.grid(row=1, column=0, pady=(0, 10))
+        for c in range(3):
+            buttons.columnconfigure(c, weight=1)
+
+        self.small_btn = tk.Button(buttons, text=f"SMALL POUR\n({self.small:.0f} oz)",
+                             font=("Helvetica", 18, "bold"), bg="#1f6feb", fg="white",
+                             activebackground="#3a86ff", activeforeground="white",
+                             width=14, height=3,
+                             command=lambda: self.pour(self.small))
+        self.small_btn.grid(row=0, column=0, padx=20)
+
+        self.large_btn = tk.Button(buttons, text=f"LARGE POUR\n({self.large:.0f} oz)",
+                             font=("Helvetica", 18, "bold"), bg="#8957e5", fg="white",
+                             activebackground="#a06bff", activeforeground="white",
+                             width=14, height=3,
+                             command=lambda: self.pour(self.large))
+        self.large_btn.grid(row=0, column=1, padx=20)
+
+        self.growler_btn = tk.Button(buttons, text=f"GROWLER\n({self.growler:.0f} oz)",
+                             font=("Helvetica", 18, "bold"), bg="#e67e22", fg="white",
+                             activebackground="#f39c12", activeforeground="white",
+                             width=14, height=3,
+                             command=lambda: self.pour(self.growler))
+        self.growler_btn.grid(row=0, column=2, padx=20)
+
+        # selected-tap info bar
+        self.info = tk.Label(self.root, text="", font=("Helvetica", 16, "bold"),
+                           bg=BG, fg=TEXT)
+        self.info.grid(row=2, column=0, pady=10)
+
         # tap cards row
         cards = tk.Frame(self.root, bg=BG)
-        cards.grid(row=1, column=0, sticky="nsew", padx=10)
+        cards.grid(row=3, column=0, sticky="nsew", padx=10)
         for i in range(len(self.taps)):
             cards.columnconfigure(i, weight=1, uniform="tap")
         cards.rowconfigure(0, weight=1)
@@ -211,38 +243,6 @@ class KegeratorApp:
             vol.pack(pady=(0, 8))
             vol.bind("<Button-1>", lambda e, idx=i + 1: self.select_tap(idx))
             self.vol_labels.append(vol)
-
-        # selected-tap info bar
-        self.info = tk.Label(self.root, text="", font=("Helvetica", 16, "bold"),
-                           bg=BG, fg=TEXT)
-        self.info.grid(row=2, column=0, pady=10)
-
-        # pour buttons
-        buttons = tk.Frame(self.root, bg=BG)
-        buttons.grid(row=3, column=0, pady=(0, 20))
-        for c in range(3):
-            buttons.columnconfigure(c, weight=1)
-
-        self.small_btn = tk.Button(buttons, text=f"SMALL POUR\n({self.small:.0f} oz)",
-                             font=("Helvetica", 18, "bold"), bg="#1f6feb", fg="white",
-                             activebackground="#3a86ff", activeforeground="white",
-                             width=14, height=3,
-                             command=lambda: self.pour(self.small))
-        self.small_btn.grid(row=0, column=0, padx=20)
-
-        self.large_btn = tk.Button(buttons, text=f"LARGE POUR\n({self.large:.0f} oz)",
-                             font=("Helvetica", 18, "bold"), bg="#8957e5", fg="white",
-                             activebackground="#a06bff", activeforeground="white",
-                             width=14, height=3,
-                             command=lambda: self.pour(self.large))
-        self.large_btn.grid(row=0, column=1, padx=20)
-
-        self.growler_btn = tk.Button(buttons, text=f"GROWLER\n({self.growler:.0f} oz)",
-                             font=("Helvetica", 18, "bold"), bg="#e67e22", fg="white",
-                             activebackground="#f39c12", activeforeground="white",
-                             width=14, height=3,
-                             command=lambda: self.pour(self.growler))
-        self.growler_btn.grid(row=0, column=2, padx=20)
 
         self.refresh()
 
