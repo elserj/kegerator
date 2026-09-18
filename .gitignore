@@ -1,0 +1,9 @@
+# Real config (contains your tap names; the app writes to it)
+config.ini
+
+# SQLite database (live keg volumes, machine-specific state)
+kegs.db
+
+# Python
+__pycache__/
+*.pyc
