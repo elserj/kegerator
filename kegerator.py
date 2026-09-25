@@ -233,9 +233,13 @@ class KegeratorApp:
             canvas.bind("<Button-1>", lambda e, idx=i + 1: self.select_tap(idx))
             self.keg_canvases.append(canvas)
 
-            text_size = self.optimal_font_size(self.taps[i]["name"], 160, 14, 50)
+            name_text = self.taps[i]["name"]
+            if name_text != "(empty)":
+                text_size = self.optimal_font_size(self.taps[i]["name"], 160, 14, 50)
+            else:
+                text_size = 24
 
-            name = tk.Label(frame, text=self.taps[i]["name"],
+            name = tk.Label(frame, text=name_text,
                           font=("Helvetica", text_size, "bold"), bg=CARD_BG, fg=TEXT)
             name.pack(pady=(4, 0))
             name.bind("<Button-1>", lambda e, idx=i + 1: self.select_tap(idx))
