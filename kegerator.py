@@ -233,18 +233,51 @@ class KegeratorApp:
             canvas.bind("<Button-1>", lambda e, idx=i + 1: self.select_tap(idx))
             self.keg_canvases.append(canvas)
 
+            text_size = self.optimal_font_size(self.taps[i]["name"], 120, 14, 50)
+
             name = tk.Label(frame, text=self.taps[i]["name"],
-                          font=("Helvetica", 14, "bold"), bg=CARD_BG, fg=TEXT)
+                          font=("Helvetica", text_size, "bold"), bg=CARD_BG, fg=TEXT)
             name.pack(pady=(4, 0))
             name.bind("<Button-1>", lambda e, idx=i + 1: self.select_tap(idx))
             self.name_labels.append(name)
 
-            vol = tk.Label(frame, text="", font=("Helvetica", 12), bg=CARD_BG, fg=TEXT_DIM)
+            vol = tk.Label(frame, text="", font=("Helvetica", 14), bg=CARD_BG, fg=TEXT_DIM)
             vol.pack(pady=(0, 8))
             vol.bind("<Button-1>", lambda e, idx=i + 1: self.select_tap(idx))
             self.vol_labels.append(vol)
 
         self.refresh()
+
+    def optimal_font_size(self, text, max_width, min_size=1, max_size=200, avg_char_width_ratio=0.5):
+        """
+        Estimate the largest font size such that `text` fits within `max_width`,
+        assuming Helvetica-like average character widths.
+
+        Args:
+            text: the string to measure
+            max_width: maximum allowed width in pixels
+            min_size: smallest font size to consider
+            max_size: largest font size to consider
+            avg_char_width_ratio: average character width as a fraction of font size
+                                   (~0.5 is a reasonable average for Helvetica)
+
+        Returns:
+            The optimal integer font size.
+        """
+        best_size = min_size
+
+        low, high = min_size, max_size
+        while low <= high:
+            mid = (low + high) // 2
+            estimated_width = len(text) * mid * avg_char_width_ratio
+
+            if estimated_width <= max_width:
+                best_size = mid
+                low = mid + 1
+            else:
+                high = mid - 1
+
+        return best_size
 
     # ------------------------------------------------------------ config watch
     def _config_mtime(self):
