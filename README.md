@@ -61,6 +61,31 @@ reset = false
 
 The app watches `config.ini` and reloads automatically ~30 seconds after you save — no restart needed.
 
+## Display session: use X11 (not Wayland)
+
+**This app runs best on an X11 session, not Wayland.**
+
+Tkinter is a native X11 toolkit. On Raspberry Pi OS Bookworm (which defaults to
+Wayland with the labwc compositor), a Tkinter app runs through Xwayland and a
+compositor, which adds noticeable input/render latency — especially on a
+Pi 3B+.
+
+If the touch interface feels laggy, switch to X11:
+
+```bash
+sudo raspi-config
+```
+
+→ **Advanced Options** → **Wayland** → select **X11** → reboot.
+
+Confirm which session you're running with:
+
+```bash
+echo $XDG_SESSION_TYPE
+```
+
+It should print `x11`.
+
 ## Autostart on the Pi (systemd)
 
 Create `/etc/systemd/system/kegerator.service`:
