@@ -21,10 +21,19 @@ below before you share or adapt these files.
 > License](https://creativecommons.org/licenses/by/4.0/)
 
 **Modifications made to the original:** both parts were imported into OnShape
-and reworked for this build — the screen frame was adapted to mount the Elecrow
-7" 1024x600 display onto the tap tower of a 4-tap Komos kegerator, and the back
-cover was reshaped into a back frame that bridges the monitor frame to the keg
-cap. Original design exported 2025-01-28; files downloaded 2026-09-14.
+and reworked for this build:
+
+- Adapted to mount the Elecrow 7" 1024x600 display to the tap tower of a 4-tap
+  Komos kegerator, rather than as a desktop Pi case.
+- The back cover was reshaped into a back frame that bridges the monitor frame
+  to the keg cap.
+- An interior wall of the display cavity was relocated toward the outer edge to
+  clear the USB connector between the Raspberry Pi and the display board.
+- All fastener holes were enlarged from 2.5 mm to 2.7 mm diameter — the original
+  was modelled at the M2.5 nominal major diameter, leaving no clearance — to
+  give an ISO 273 close-fit clearance hole.
+
+Original design exported 2025-01-28; files downloaded 2026-09-14.
 
 `keg_cap` is original to this project and is **not** derived from the above.
 
