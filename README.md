@@ -2,6 +2,10 @@
 
 A touchscreen kegerator tracker for a Raspberry Pi 3B+ with a 7" HDMI display (Elecrow), built with Python + Tkinter.
 
+<p align="center">
+  <img src="3Dprint_files/images/final_product.jpg" alt="The finished kegerator with the touchscreen mounted on the tap tower" width="640">
+</p>
+
 ## Features
 
 - **4 tap cards**, each showing a keg icon (drawn from `keg.svg`) with a color-coded volume fill:
