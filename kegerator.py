@@ -32,6 +32,16 @@ OUTLINE = "#111111"        # dark outline on keg
 # All kegs are 5-gallon corny kegs (640 oz). Capacity is fixed.
 KEG_CAPACITY_OZ = 640.0
 
+# A tap named "(empty)" always reads 0% and is drawn at a fixed font size.
+EMPTY_LABEL = "(empty)"
+EMPTY_FONT_SIZE = 24
+
+
+def is_empty_name(name):
+    """True if a config name marks this tap as empty. Trimmed and
+    case-insensitive, so ' (Empty) ' is treated the same as '(empty)'."""
+    return name.strip().lower() == EMPTY_LABEL
+
 
 # ---------------------------------------------------------------- config
 def load_config(path="config.ini"):
@@ -101,7 +111,7 @@ def load_volumes(conn, taps, config_path="config.ini"):
     reset_ids = []
     for i, tap in enumerate(taps, start=1):
         # an "(empty)" tap is always empty (0%)
-        if tap["name"].strip().lower() == "(empty)":
+        if is_empty_name(tap["name"]):
             volumes[i] = 0.0
             conn.execute("INSERT OR REPLACE INTO kegs (tap_id, volume_oz) VALUES (?,?)",
                        (i, 0.0))
@@ -234,13 +244,10 @@ class KegeratorApp:
             self.keg_canvases.append(canvas)
 
             name_text = self.taps[i]["name"]
-            if name_text != "(empty)":
-                text_size = self.optimal_font_size(self.taps[i]["name"], 160, 14, 50)
-            else:
-                text_size = 24
 
             name = tk.Label(frame, text=name_text,
-                          font=("Helvetica", text_size, "bold"), bg=CARD_BG, fg=TEXT)
+                          font=("Helvetica", self.name_font_size(name_text), "bold"),
+                          bg=CARD_BG, fg=TEXT)
             name.pack(pady=(4, 0))
             name.bind("<Button-1>", lambda e, idx=i + 1: self.select_tap(idx))
             self.name_labels.append(name)
@@ -251,6 +258,15 @@ class KegeratorApp:
             self.vol_labels.append(vol)
 
         self.refresh()
+
+    def name_font_size(self, name):
+        """Font size for a tap name. '(empty)' is pinned to a fixed size so it
+        doesn't balloon to fill the card the way a short real name would.
+        Used by both initial build and refresh, so a tap that *becomes* empty
+        re-sizes to match one that started empty."""
+        if is_empty_name(name):
+            return EMPTY_FONT_SIZE
+        return self.optimal_font_size(name, 160, 14, 50)
 
     def optimal_font_size(self, text, max_width, min_size=1, max_size=200, avg_char_width_ratio=0.5):
         """
@@ -476,7 +492,10 @@ class KegeratorApp:
                 bg=card_bg,
             )
             self.keg_canvases[i].config(bg=card_bg)
-            self.name_labels[i].config(text=tap["name"], bg=card_bg)
+            self.name_labels[i].config(
+                text=tap["name"], bg=card_bg,
+                font=("Helvetica", self.name_font_size(tap["name"]), "bold"),
+            )
             self.vol_labels[i].config(bg=card_bg)
             self.draw_keg(self.keg_canvases[i], color, pct, card_bg)
             self.vol_labels[i].config(text=f"{vol:.0f} oz")
